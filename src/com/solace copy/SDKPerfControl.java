@@ -60,13 +60,11 @@ public class SDKPerfControl extends JPanel {
 	private String HighSpeedRcvRate;
 	private String LowSpeedRcvRate;
 	private long ProgressAmount;
-	// used to update receive counter in single client mode
 	private long Paired_ProgressAmount;
 
 	public void setProgressAmount(int increment, int paired_increment) {
 		ProgressAmount += increment;
-		if (sdkPerfGUIApp.isSingleClientMode()) {
-			// update receive counter in single client mode
+		if (sdkPerfGUIApp.isEnableLatencyMeasurement()) {
 			Paired_ProgressAmount += paired_increment;
 		}
 	}
@@ -91,7 +89,6 @@ public class SDKPerfControl extends JPanel {
 	private JTextField msgSizeField;
 	private JLabel lblSize;
 	private SDKPerfGUIApp sdkPerfGUIApp = null;
-	// paired subscriber is used just to get subscriber settings in single client mode, it's not actually invoked
 	private SDKPerfControl pairedSubscriber;
 	
 	public boolean isFast() {
@@ -155,7 +152,7 @@ public class SDKPerfControl extends JPanel {
 
 				//Update message count
 				msgCountTextBox.setValue(new Long(ProgressAmount));
-				if (sdkPerfGUIApp.isSingleClientMode()) {
+				if (sdkPerfGUIApp.isEnableLatencyMeasurement()) {
 					pairedSubscriber.msgCountTextBox.setValue(new Long(Paired_ProgressAmount));
 				}
 //				setProgress(progress);
@@ -360,57 +357,51 @@ public class SDKPerfControl extends JPanel {
 				Args.add(sdkPerfGUIApp.getFastPublishSpeed());
 			} else {
 				Args.add(sdkPerfGUIApp.getSlowPublishSpeed());
+				
 			}
-			if (sdkPerfGUIApp.isDTO()) {
-				Args.add("-pto");
-			}
-			if (sdkPerfGUIApp.isRequestReply()) {
-				Args.add("-prq");
-			}
-		} 
-		if (bSubscriber || sdkPerfGUIApp.isSingleClientMode()) { // subscriber or single client mode
+		} else  { // regular subscriber!
 			if (sdkPerfGUIApp.isTopic()) {
 				Args.add("-stl");
 			} else {
 				Args.add("-sql");
-			}	
+			}				
 			Args.add(sdkPerfGUIApp.getMessageDestination());
-			if (sdkPerfGUIApp.isReplyMode()) {
-				Args.add("-cm=reply");
+			if (bFast) {
+				// a fast subscriber might still have a non-zero subscriber delay, 0 is the default so safe to always add
+				Args.add("-sd");
+				Args.add(sdkPerfGUIApp.getFastSubscriberDelay());
+			}  else {
+				Args.add("-sd");
+				Args.add(sdkPerfGUIApp.getSlowSubscriberDelay());
 			}
-			if (bSubscriber) { //native subscriber
-				if (bFast) {
-					// a fast subscriber might still have a non-zero subscriber delay, 0 is the default so safe to always add
-					Args.add("-sd");
-					Args.add(sdkPerfGUIApp.getFastSubscriberDelay());
-				}  else {
-					Args.add("-sd");
-					Args.add(sdkPerfGUIApp.getSlowSubscriberDelay());
-				}
-				if (chckbxShowData.isSelected()) {
-					Args.add("-md");
-				}
-			} else { //paired subscriber in Single Client mode
-				if (pairedSubscriber.bFast) {
-					// a fast subscriber might still have a non-zero subscriber delay, 0 is the default so safe to always add
-					Args.add("-sd");
-					Args.add(sdkPerfGUIApp.getFastSubscriberDelay());
-				}  else {
-					Args.add("-sd");
-					Args.add(sdkPerfGUIApp.getSlowSubscriberDelay());
-				}
-				if (pairedSubscriber.chckbxShowData.isSelected()) {
-					Args.add("-md");
-				}
-
+			if (chckbxShowData.isSelected()) {
+				Args.add("-md");
 			}
 		}
 		// it's safe to always add this since direct is the default we are just be explicit about it
 		Args.add("-mt");
 		Args.add(persistenceType.getCurrentClientMessagingType());
 		
-		// add latency settings
+		// add latency settings if enabled
 		if (sdkPerfGUIApp.isEnableLatencyMeasurement()) {
+			// add subscriber settings but with values from the paired subscriber
+			if (sdkPerfGUIApp.isTopic()) {
+				Args.add("-stl");
+			} else {
+				Args.add("-sql");
+			}				
+			Args.add(sdkPerfGUIApp.getMessageDestination());
+			if (pairedSubscriber.isFast()) {
+				// a fast subscriber might still have a non-zero subscriber delay, 0 is the default so safe to always add
+				Args.add("-sd");
+				Args.add(sdkPerfGUIApp.getFastSubscriberDelay());
+			}  else {
+				Args.add("-sd");
+				Args.add(sdkPerfGUIApp.getSlowSubscriberDelay());
+			}
+			if (pairedSubscriber.isShowData()) {
+				Args.add("-md");
+			}
 			Args.add("-l");
 			// default latency granularity is 0 so we can safely add any value 0 or above
 			Args.add("-lg");
@@ -467,7 +458,7 @@ public class SDKPerfControl extends JPanel {
 	private void launchSDKPerf() {	
 		// reset message count
 		ProgressAmount = 0;		
-		if (sdkPerfGUIApp.isSingleClientMode()) {
+		if (sdkPerfGUIApp.isEnableLatencyMeasurement()) {
 			Paired_ProgressAmount = 0;
 		}
 		msgCountTextBox.setValue(new Long(0));
@@ -553,7 +544,6 @@ public class SDKPerfControl extends JPanel {
 	}
 
 	public void addPairedSubscriber(SDKPerfControl subscriber) {
-		// paired subscriber is used just to get subscriber settings in single client mode
 		pairedSubscriber = subscriber;	
 	}
 
