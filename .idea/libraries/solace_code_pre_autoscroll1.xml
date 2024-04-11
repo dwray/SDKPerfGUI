@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="solace_code_pre_autoscroll1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/com/solace_code_pre_autoscroll.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

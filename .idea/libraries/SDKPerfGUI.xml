@@ -1,0 +1,25 @@
+<component name="libraryTable">
+  <library name="SDKPerfGUI">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/miglayout-src.zip!/" />
+      <root url="jar://$PROJECT_DIR$/jgoodies-forms-1.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jgoodies-forms-1.8.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jar-in-jar-loader.zip!/" />
+      <root url="jar://$PROJECT_DIR$/src.zip!/" />
+      <root url="jar://$PROJECT_DIR$/miglayout15-swing.jar!/" />
+      <root url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-rest-8.4.13.6/lib" />
+      <root url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-mqtt-8.4.15.5/lib" />
+      <root url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib" />
+      <root url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib/optional" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib/optional" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-mqtt-8.4.15.5/lib" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-rest-8.4.13.6/lib" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Documents/Solace/Tools/sdkperf-jcsmp-8.4.14.10/lib" recursive="false" type="SOURCES" />
+  </library>
+</component>
